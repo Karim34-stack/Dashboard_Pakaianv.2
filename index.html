@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin Toko Pakaian</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between hidden md:flex">
+            <div class="p-5">
+                <h1 class="text-2xl font-bold tracking-wider flex items-center gap-2">
+                    <i data-lucide="shirt" class="text-indigo-400"></i> FashionAdmin
+                </h1>
+                <nav class="mt-8 space-y-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-indigo-600 rounded-lg text-white font-medium">
+                        <i data-lucide="package"></i> Kelola Produk
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                        <i data-lucide="shopping-bag"></i> Pesanan
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                        <i data-lucide="users"></i> Pelanggan
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                        <i data-lucide="bar-chart-2"></i> Laporan
+                    </a>
+                </nav>
+            </div>
+            <div class="p-5 border-t border-slate-800">
+                <button class="flex items-center gap-3 text-gray-400 hover:text-red-400 transition w-full">
+                    <i data-lucide="log-out"></i> Keluar
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Topbar -->
+            <header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">Manajemen Produk Pakaian</h2>
+                <div class="flex items-center gap-4">
+                    <button onclick="openModal('add')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium shadow transition">
+                        <i data-lucide="plus"></i> Tambah Produk Baru
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="p-6">
+                <!-- Stats Summary -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+                            <i data-lucide="shirt" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Total Produk</p>
+                            <h3 id="total-products" class="text-2xl font-bold text-gray-800">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-green-50 text-green-600 rounded-lg">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Stok Tersedia</p>
+                            <h3 id="total-stock" class="text-2xl font-bold text-gray-800">0 Pcs</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+                            <i data-lucide="tag" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Kategori Pakaian</p>
+                            <h3 class="text-2xl font-bold text-gray-800">4 Kategori</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Table Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <!-- Table Header & Search -->
+                    <div class="p-5 border-b flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="relative w-full md:w-72">
+                            <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-400 w-5 h-5"></i>
+                            <input type="text" id="search-input" onkeyup="renderProducts()" placeholder="Cari nama pakaian..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b text-gray-600 text-sm">
+                                    <th class="p-4">Produk</th>
+                                    <th class="p-4">Kategori</th>
+                                    <th class="p-4">Harga</th>
+                                    <th class="p-4">Ukuran</th>
+                                    <th class="p-4">Stok</th>
+                                    <th class="p-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-table-body" class="divide-y divide-gray-100 text-sm">
+                                <!-- Data produk akan dirender di sini lewat JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL FORM (TAMBAH / EDIT PRODUK) -->
+    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-fade-in">
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h3 id="modal-title" class="font-bold text-gray-800 text-lg">Tambah Produk Pakaian</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <form id="product-form" onsubmit="saveProduct(event)" class="p-6 space-y-4">
+                <input type="hidden" id="product-id">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pakaian</label>
+                    <input type="text" id="product-name" required placeholder="Contoh: Kemeja Oversize Linen" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                        <select id="product-category" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                            <option value="Kaos">Kaos / T-Shirt</option>
+                            <option value="Kemeja">Kemeja</option>
+                            <option value="Celana">Celana</option>
+                            <option value="Jaket">Jaket / Outer</option>
+                            <option value="Gaun">Gaun / Dress</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
+                        <input type="number" id="product-price" required placeholder="150000" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ukuran (Size)</label>
+                        <input type="text" id="product-size" required placeholder="S, M, L, XL" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stok (Pcs)</label>
+                        <input type="number" id="product-stock" required placeholder="50" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload Gambar Produk</label>
+                    <input type="file" id="product-image-input" accept="image/*" onchange="previewImage(event)" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    
+                    <!-- Preview Image Container -->
+                    <div class="mt-3 flex justify-center">
+                        <img id="image-preview" src="" alt="Preview" class="h-32 object-cover rounded-lg border hidden">
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 text-sm font-medium">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Data Awal Produk (Dummy Data)
+        let products = [
+            {
+                id: 1,
+                name: "Kemeja Flanel Kotak-Kotak",
+                category: "Kemeja",
+                price: 185000,
+                size: "M, L, XL",
+                stock: 24,
+                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                id: 2,
+                name: "Jaket Denim Vintage Blue",
+                category: "Jaket",
+                price: 350000,
+                size: "L, XL",
+                stock: 12,
+                image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                id: 3,
+                name: "Kaos Polos Cotton Combed 30s",
+                category: "Kaos",
+                price: 65000,
+                size: "S, M, L, XL",
+                stock: 100,
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80"
+            }
+        ];
+
+        let currentImageData = "";
+
+        // Function Render/Tampilkan Data ke Tabel
+        function renderProducts() {
+            const tbody = document.getElementById("product-table-body");
+            const searchInput = document.getElementById("search-input").value.toLowerCase();
+            tbody.innerHTML = "";
+
+            let totalStock = 0;
+
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchInput));
+
+            filteredProducts.forEach(product => {
+                totalStock += parseInt(product.stock);
+
+                const row = document.createElement("tr");
+                row.className = "hover:bg-gray-50 transition";
+                row.innerHTML = `
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${product.image}" alt="${product.name}" class="w-12 h-12 rounded-lg object-cover border">
+                        <span class="font-medium text-gray-800">${product.name}</span>
+                    </td>
+                    <td class="p-4 text-gray-600"><span class="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full text-xs font-semibold">${product.category}</span></td>
+                    <td class="p-4 font-semibold text-gray-800">Rp ${Number(product.price).toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-gray-600">${product.size}</td>
+                    <td class="p-4">
+                        <span class="${product.stock > 0 ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'} px-2.5 py-1 rounded-md text-xs font-bold">
+                            ${product.stock} Pcs
+                        </span>
+                    </td>
+                    <td class="p-4 text-center space-x-2">
+                        <button onclick="editProduct(${product.id})" class="p-1.5 bg-amber-50 text-amber-600 rounded-md hover:bg-amber-100 transition" title="Edit">
+                            <i data-lucide="edit-2" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteProduct(${product.id})" class="p-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition" title="Hapus">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update Ringkasan Stat
+            document.getElementById("total-products").innerText = products.length;
+            document.getElementById("total-stock").innerText = totalStock + " Pcs";
+
+            // Inisialisasi ikon Lucide
+            lucide.createIcons();
+        }
+
+        // Preview Gambar saat Upload File
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById("image-preview");
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove("hidden");
+                    currentImageData = e.target.result; // Simpan data base64 gambar
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Buka Modal (Tambah / Edit)
+        function openModal(mode, product = null) {
+            const modal = document.getElementById("product-modal");
+            const modalTitle = document.getElementById("modal-title");
+            const form = document.getElementById("product-form");
+            const preview = document.getElementById("image-preview");
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            if (mode === 'add') {
+                modalTitle.innerText = "Tambah Produk Pakaian";
+                form.reset();
+                document.getElementById("product-id").value = "";
+                preview.classList.add("hidden");
+                currentImageData = "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=300&q=80"; // Default image placeholder
+            } else if (mode === 'edit') {
+                modalTitle.innerText = "Edit Produk Pakaian";
+                document.getElementById("product-id").value = product.id;
+                document.getElementById("product-name").value = product.name;
+                document.getElementById("product-category").value = product.category;
+                document.getElementById("product-price").value = product.price;
+                document.getElementById("product-size").value = product.size;
+                document.getElementById("product-stock").value = product.stock;
+                
+                preview.src = product.image;
+                preview.classList.remove("hidden");
+                currentImageData = product.image;
+            }
+        }
+
+        // Tutup Modal
+        function closeModal() {
+            const modal = document.getElementById("product-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // Simpan Data (Create / Update)
+        function saveProduct(event) {
+            event.preventDefault();
+
+            const id = document.getElementById("product-id").value;
+            const name = document.getElementById("product-name").value;
+            const category = document.getElementById("product-category").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const size = document.getElementById("product-size").value;
+            const stock = parseInt(document.getElementById("product-stock").value);
+
+            if (id) {
+                // Update Produk
+                const index = products.findIndex(p => p.id == id);
+                if (index !== -1) {
+                    products[index] = { id: parseInt(id), name, category, price, size, stock, image: currentImageData };
+                }
+            } else {
+                // Tambah Produk Baru
+                const newProduct = {
+                    id: Date.now(),
+                    name,
+                    category,
+                    price,
+                    size,
+                    stock,
+                    image: currentImageData
+                };
+                products.push(newProduct);
+            }
+
+            closeModal();
+            renderProducts();
+        }
+
+        // Edit Produk Trigger
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                openModal('edit', product);
+            }
+        }
+
+        // Hapus Produk
+        function deleteProduct(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+                products = products.filter(p => p.id !== id);
+                renderProducts();
+            }
+        }
+
+        // Jalankan saat pertama kali halaman dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts();
+        });
+    </script>
+</body>
+</html>
