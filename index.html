@@ -55,7 +55,7 @@
             <!-- Content -->
             <main class="p-6">
                 <!-- Stats Summary -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
                         <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
                             <i data-lucide="shirt" class="w-8 h-8"></i>
@@ -66,7 +66,7 @@
                         </div>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
-                        <div class="p-3 bg-green-50 text-green-600 rounded-lg">
+                        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
                             <i data-lucide="check-circle" class="w-8 h-8"></i>
                         </div>
                         <div>
@@ -75,12 +75,21 @@
                         </div>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+                            <i data-lucide="trending-up" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Potensi Profit Total</p>
+                            <h3 id="total-profit-potential" class="text-xl font-bold text-emerald-600">Rp 0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
                         <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
                             <i data-lucide="tag" class="w-8 h-8"></i>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Kategori Pakaian</p>
-                            <h3 class="text-2xl font-bold text-gray-800">4 Kategori</h3>
+                            <h3 class="text-2xl font-bold text-gray-800">5 Kategori</h3>
                         </div>
                     </div>
                 </div>
@@ -102,7 +111,9 @@
                                 <tr class="bg-gray-50 border-b text-gray-600 text-sm">
                                     <th class="p-4">Produk</th>
                                     <th class="p-4">Kategori</th>
-                                    <th class="p-4">Harga</th>
+                                    <th class="p-4">Harga Beli</th>
+                                    <th class="p-4">Harga Jual</th>
+                                    <th class="p-4">Profit / Pcs</th>
                                     <th class="p-4">Ukuran</th>
                                     <th class="p-4">Stok</th>
                                     <th class="p-4 text-center">Aksi</th>
@@ -148,20 +159,31 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
-                        <input type="number" id="product-price" required placeholder="150000" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ukuran (Size)</label>
+                        <input type="text" id="product-size" required placeholder="S, M, L, XL" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ukuran (Size)</label>
-                        <input type="text" id="product-size" required placeholder="S, M, L, XL" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga Beli / Modal (Rp)</label>
+                        <input type="number" id="product-buy-price" required placeholder="100000" oninput="calculateMarginPreview()" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Stok (Pcs)</label>
-                        <input type="number" id="product-stock" required placeholder="50" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga Jual (Rp)</label>
+                        <input type="number" id="product-sell-price" required placeholder="150000" oninput="calculateMarginPreview()" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
                     </div>
+                </div>
+
+                <!-- Estimasi Margin Profit -->
+                <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100 text-xs text-indigo-700 flex justify-between items-center">
+                    <span>Estimasi Profit/Pcs:</span>
+                    <span id="margin-preview-text" class="font-bold text-indigo-900">Rp 0 (0%)</span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Stok (Pcs)</label>
+                    <input type="number" id="product-stock" required placeholder="50" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
                 </div>
 
                 <div>
@@ -190,7 +212,8 @@
                 id: 1,
                 name: "Kemeja Flanel Kotak-Kotak",
                 category: "Kemeja",
-                price: 185000,
+                buyPrice: 110000,
+                sellPrice: 185000,
                 size: "M, L, XL",
                 stock: 24,
                 image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&q=80"
@@ -199,7 +222,8 @@
                 id: 2,
                 name: "Jaket Denim Vintage Blue",
                 category: "Jaket",
-                price: 350000,
+                buyPrice: 210000,
+                sellPrice: 350000,
                 size: "L, XL",
                 stock: 12,
                 image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=300&q=80"
@@ -208,7 +232,8 @@
                 id: 3,
                 name: "Kaos Polos Cotton Combed 30s",
                 category: "Kaos",
-                price: 65000,
+                buyPrice: 35000,
+                sellPrice: 65000,
                 size: "S, M, L, XL",
                 stock: 100,
                 image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80"
@@ -217,6 +242,23 @@
 
         let currentImageData = "";
 
+        // Hitung estimasi margin profit di dalam Modal Form
+        function calculateMarginPreview() {
+            const buyPrice = parseFloat(document.getElementById("product-buy-price").value) || 0;
+            const sellPrice = parseFloat(document.getElementById("product-sell-price").value) || 0;
+            const profit = sellPrice - buyPrice;
+            const percentage = sellPrice > 0 ? ((profit / sellPrice) * 100).toFixed(1) : 0;
+
+            const previewText = document.getElementById("margin-preview-text");
+            if (profit >= 0) {
+                previewText.innerText = `Rp ${profit.toLocaleString('id-ID')} (${percentage}%)`;
+                previewText.className = "font-bold text-emerald-600";
+            } else {
+                previewText.innerText = `Rugi: Rp ${Math.abs(profit).toLocaleString('id-ID')} (${percentage}%)`;
+                previewText.className = "font-bold text-red-600";
+            }
+        }
+
         // Function Render/Tampilkan Data ke Tabel
         function renderProducts() {
             const tbody = document.getElementById("product-table-body");
@@ -224,11 +266,16 @@
             tbody.innerHTML = "";
 
             let totalStock = 0;
+            let totalPotentialProfit = 0;
 
             const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchInput));
 
             filteredProducts.forEach(product => {
+                const profitPerUnit = product.sellPrice - product.buyPrice;
+                const totalItemProfit = profitPerUnit * product.stock;
+                
                 totalStock += parseInt(product.stock);
+                totalPotentialProfit += totalItemProfit;
 
                 const row = document.createElement("tr");
                 row.className = "hover:bg-gray-50 transition";
@@ -238,10 +285,16 @@
                         <span class="font-medium text-gray-800">${product.name}</span>
                     </td>
                     <td class="p-4 text-gray-600"><span class="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full text-xs font-semibold">${product.category}</span></td>
-                    <td class="p-4 font-semibold text-gray-800">Rp ${Number(product.price).toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-gray-500">Rp ${Number(product.buyPrice).toLocaleString('id-ID')}</td>
+                    <td class="p-4 font-semibold text-gray-800">Rp ${Number(product.sellPrice).toLocaleString('id-ID')}</td>
+                    <td class="p-4">
+                        <span class="${profitPerUnit >= 0 ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold'}">
+                            Rp ${Number(profitPerUnit).toLocaleString('id-ID')}
+                        </span>
+                    </td>
                     <td class="p-4 text-gray-600">${product.size}</td>
                     <td class="p-4">
-                        <span class="${product.stock > 0 ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'} px-2.5 py-1 rounded-md text-xs font-bold">
+                        <span class="${product.stock > 0 ? 'text-blue-600 bg-blue-50' : 'text-red-600 bg-red-50'} px-2.5 py-1 rounded-md text-xs font-bold">
                             ${product.stock} Pcs
                         </span>
                     </td>
@@ -260,6 +313,7 @@
             // Update Ringkasan Stat
             document.getElementById("total-products").innerText = products.length;
             document.getElementById("total-stock").innerText = totalStock + " Pcs";
+            document.getElementById("total-profit-potential").innerText = "Rp " + totalPotentialProfit.toLocaleString('id-ID');
 
             // Inisialisasi ikon Lucide
             lucide.createIcons();
@@ -275,7 +329,7 @@
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.classList.remove("hidden");
-                    currentImageData = e.target.result; // Simpan data base64 gambar
+                    currentImageData = e.target.result;
                 }
                 reader.readAsDataURL(file);
             }
@@ -297,18 +351,21 @@
                 document.getElementById("product-id").value = "";
                 preview.classList.add("hidden");
                 currentImageData = "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=300&q=80"; // Default image placeholder
+                calculateMarginPreview();
             } else if (mode === 'edit') {
                 modalTitle.innerText = "Edit Produk Pakaian";
                 document.getElementById("product-id").value = product.id;
                 document.getElementById("product-name").value = product.name;
                 document.getElementById("product-category").value = product.category;
-                document.getElementById("product-price").value = product.price;
+                document.getElementById("product-buy-price").value = product.buyPrice;
+                document.getElementById("product-sell-price").value = product.sellPrice;
                 document.getElementById("product-size").value = product.size;
                 document.getElementById("product-stock").value = product.stock;
                 
                 preview.src = product.image;
                 preview.classList.remove("hidden");
                 currentImageData = product.image;
+                calculateMarginPreview();
             }
         }
 
@@ -326,7 +383,8 @@
             const id = document.getElementById("product-id").value;
             const name = document.getElementById("product-name").value;
             const category = document.getElementById("product-category").value;
-            const price = parseFloat(document.getElementById("product-price").value);
+            const buyPrice = parseFloat(document.getElementById("product-buy-price").value);
+            const sellPrice = parseFloat(document.getElementById("product-sell-price").value);
             const size = document.getElementById("product-size").value;
             const stock = parseInt(document.getElementById("product-stock").value);
 
@@ -334,7 +392,7 @@
                 // Update Produk
                 const index = products.findIndex(p => p.id == id);
                 if (index !== -1) {
-                    products[index] = { id: parseInt(id), name, category, price, size, stock, image: currentImageData };
+                    products[index] = { id: parseInt(id), name, category, buyPrice, sellPrice, size, stock, image: currentImageData };
                 }
             } else {
                 // Tambah Produk Baru
@@ -342,7 +400,8 @@
                     id: Date.now(),
                     name,
                     category,
-                    price,
+                    buyPrice,
+                    sellPrice,
                     size,
                     stock,
                     image: currentImageData
